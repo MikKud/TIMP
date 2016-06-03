@@ -1,0 +1,38 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+
+#include <iostream>
+
+
+
+using namespace std;
+
+
+int main(int argc, const char * argv[]) {
+	bool is_in_doxygen = false;
+	while (!cin.eof()) {
+		string s = "";
+		getline(cin, s);
+		size_t eod = s.find("*/");
+
+		if ((s.find("/**")) != string::npos)
+			is_in_doxygen = true;
+		if (is_in_doxygen) {
+			size_t p = s.find("\\func");
+
+			if (p != string::npos) {
+				string description = s.substr(p + 5, eod - (p + 5));
+
+				cout << description << endl;
+			}
+		}
+
+		if (eod != string::npos)
+			is_in_doxygen = false;
+
+	}
+
+	return 0;
+}
