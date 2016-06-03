@@ -1,0 +1,83 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <iostream>
+using namespace std;
+
+
+typedef int tdata;
+
+
+class Stack
+{
+public:
+	Stack(tdata _data, Stack *_next);
+	~Stack();
+	tdata	data;
+	Stack	*next;
+};
+
+
+class StackController
+{
+public:
+	StackController();
+	~StackController();
+
+	Stack	*head;
+	void	add(tdata data);
+	void	del(void);
+	tdata	get(void);
+};
+Stack::Stack(tdata _data, Stack *_next) : data(_data), next(_next)
+{}
+Stack::~Stack()
+{}
+StackController::StackController() : head(nullptr)
+{}
+StackController::~StackController()
+{}
+void StackController::add(tdata data)
+{
+	Stack *newElement = new Stack(data, head);
+	head = newElement;
+	return;
+}
+
+
+void StackController::del(void)
+{
+	Stack *deleted = head;
+	head = head->next;
+	delete deleted;
+	return;
+}
+
+
+tdata StackController::get(void)
+{
+	return head->data;
+}
+int main() 
+{
+	int n;
+	string cmd = "";
+	StackController stack = StackController();
+
+	cin >> n;
+	while (n-- > 0) {
+		cin >> cmd;
+		if (cmd == "add") {
+			tdata data;
+			cin >> data;
+			stack.add(data);
+		}
+		else if (cmd == "del")
+			stack.del();
+		else if (cmd == "get")
+			cout << stack.get() << endl;
+	}
+
+	return 0;
+}
