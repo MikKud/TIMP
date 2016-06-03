@@ -1,0 +1,102 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <iostream>
+using namespace std;
+
+
+typedef int tdata;
+
+
+class List
+{
+public:
+	List(tdata _data);
+	~List();
+
+	tdata	data;
+	List	*next;
+};
+
+
+class ListController {
+public:
+	ListController();
+	~ListController();
+
+	List*	cursor;
+	List*	start;
+
+	void	add(int index, tdata data);
+	void	del(int index);
+	tdata	get(int index);
+};
+List::List(tdata _data) : data(_data), next(nullptr) {}
+List::~List() {}
+ListController::ListController() : start(nullptr), cursor(nullptr) {}
+ListController::~ListController() {}
+void ListController::add(int index, tdata data) {
+	cursor = start;
+	List* newElement = new List(data);
+	index--;
+	if (index < 0) {
+		newElement->next = start;
+		start = newElement;
+		return;
+	}
+	while (--index >= 0)
+		cursor = cursor->next;
+	newElement->next = cursor->next;
+	cursor->next = newElement;
+	return;
+}
+
+
+void ListController::del(int index) {
+	cursor = start;
+	index--;
+	if (index < 0) {
+		start = start->next;
+		delete cursor;
+		return;
+	}
+	while (--index >= 0)
+		cursor = cursor->next;
+	List *deleted = cursor->next;
+	cursor->next = cursor->next->next;
+	delete deleted;
+	return;
+}
+
+
+tdata ListController::get(int index) {
+	cursor = start;
+	while (--index >= 0)
+		cursor = cursor->next;
+	return cursor->data;
+}
+
+int main() {
+	int n;
+	string cmd = "";
+	ListController list = ListController();
+
+	cin >> n;
+	while (n-- > 0) {
+		int index;
+		cin >> cmd;
+		cin >> index;
+		if (cmd == "add") {
+			tdata data;
+			cin >> data;
+			list.add(index, data);
+		}
+		else if (cmd == "del")
+			list.del(index);
+		else if (cmd == "get")
+			cout << list.get(index) << endl;
+	}
+
+	return 0;
+}
