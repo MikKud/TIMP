@@ -1,0 +1,90 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <iostream>
+using namespace std;
+
+
+typedef int tdata;
+class Queue
+{
+public:
+	Queue(tdata _data);
+	~Queue();
+	int		data;
+	Queue	*next;
+};
+
+
+class QueueController
+{
+public:
+	QueueController();
+	~QueueController();
+
+	Queue	*head;
+	Queue	*tail;
+
+	void	add(tdata data);
+	void	del(void);
+	tdata	get(void);
+};
+
+Queue::Queue(tdata _data) : data(_data), next(nullptr)
+{}
+Queue::~Queue()
+{}
+QueueController::QueueController() : head(nullptr), tail(nullptr)
+{}
+QueueController::~QueueController()
+{}
+void QueueController::add(tdata data)
+{
+	Queue *newElement = new Queue(data);
+	if (tail != nullptr) {
+		tail->next = newElement;
+		tail = tail->next;
+	}
+	else
+		head = tail = newElement;
+	return;
+}
+void QueueController::del(void)
+{
+	if (head != nullptr) {
+		Queue *deleted = head;
+		head = head->next;
+		delete deleted;
+	}
+	else
+		tail = nullptr;
+	return;
+}
+tdata QueueController::get(void)
+{
+	return head->data;
+}
+
+int main() {
+	int n;
+	string cmd = "";
+	QueueController queue = QueueController();
+
+	cin >> n;
+	while (n-- > 0) {
+		cin >> cmd;
+		if (cmd == "add") {
+			tdata data;
+			cin >> data;
+			queue.add(data);
+		}
+		else if (cmd == "del") {
+			queue.del();
+		}
+		else if (cmd == "get") {
+			cout << queue.get() << endl;
+		}
+	}
+	return 0;
+}
