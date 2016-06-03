@@ -1,0 +1,101 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <iostream>
+using namespace std;
+#include <vector>
+#include <map>
+
+
+class Base {
+public:
+	virtual void show() = 0;
+protected:
+	Base(int v) : value(v) {}
+	int value;
+};
+class A : public Base {
+public:
+	A(int v) : Base(v) {}
+	void show() { cout << "class A: " << value << endl; }
+};
+class B : public Base {
+public:
+	B(int v) : Base(v) {}
+	void show() { cout << "class B: " << value << endl; }
+};
+class C : public Base {
+public:
+	C(int v) : Base(v) {}
+	void show() { cout << "class C: " << value << endl; }
+};
+class Factory {
+public:
+	virtual Base* createBase(int value) = 0;
+	virtual ~Factory() {}
+};
+class AFactory : public Factory {
+public:
+	Base* createBase(int value) { return new A(value); }
+};
+class BFactory : public Factory {
+public:
+	Base* createBase(int value) { return new B(value); }
+};
+class CFactory : public Factory {
+public:
+	Base* createBase(int value) { return new C(value); }
+};
+class Functor
+{
+public:
+	virtual void operator()(vector<Base*>& vec) = 0;
+	virtual ~Functor() {};
+};
+class FunctorCreate : public Functor
+{
+private:
+	map<string, Factory*> factories;
+public:
+	FunctorCreate() {
+		factories["A"] = new AFactory;
+		factories["B"] = new BFactory;
+		factories["C"] = new CFactory;
+	}
+
+void operator()(vector<Base*>& vec) {
+		string classname;
+		int v;
+		cin >> classname >> v;
+		vec.push_back(factories[classname]->createBase(v));
+		return;
+	}
+};
+class FunctorShowAll : public Functor
+{
+public:
+	FunctorShowAll() {}
+	void operator()(vector<Base*>& v) {
+		for (auto a : v)
+			a->show();
+		return;
+	}
+};
+
+int main() {
+	map<string, Functor*> functions;
+	functions["create"] = new FunctorCreate;
+	functions["showall"] = new FunctorShowAll;
+
+	int n;
+	vector<Base*> vec;
+	cin >> n;
+	while (n-- > 0) {
+		string cmd;
+		cin >> cmd;
+		(*functions[cmd])(vec);
+	}
+	
+	return 0;
+}
