@@ -1,0 +1,38 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+int main()
+{
+	int i = 0;
+	string fname;
+	string f2name;
+	cin >> name1;
+	cin >> name2;
+
+	ifstream File1(fname);
+	ifstream File2(f2name);
+
+	while (!File1.eof() || !File2.eof()) 
+	{
+		i++;
+		string line1;
+		string line2;
+		getline(File1, line1);
+		getline(File2, line2);
+		if (line1 != line2) 
+		{
+			cout << fname << " " << i << " " << line1 << endl;
+			cout << f2name << " " << i << " " << line2 << endl;
+		}	
+	}
+
+	File1.close();
+	File2.close();
+	system("pause");
+	return 0;
+}
