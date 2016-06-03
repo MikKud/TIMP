@@ -1,0 +1,57 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <iostream>
+using namespace std;
+#include <vector>
+
+
+
+
+int main() {
+	int v_count, e_count;
+	cin >> v_count >> e_count;
+
+	int target;
+	cin >> target;
+
+	auto graph = new int[v_count];
+	for (auto i = 0; i < v_count; i++)
+		for (auto j = 0; j < v_count; j++)
+			graph[i*v_count + j] = SHRT_MAX;
+	for (auto i = 0; i < e_count; i++) {
+		int v1, v2;
+		cin >> v1 >> v2 >> graph[v1*v_count + v2];
+	}
+
+	int* dist = new int[v_count];
+	bool* visited = new bool[v_count];
+	for (auto i = 0; i < v_count; i++) {
+		dist[i] = graph[target*v_count + i];
+		visited[i] = false;
+	}
+
+	for (auto iteration = 1; iteration < v_count; iteration++) {
+		int nearest = target;
+		for (auto i = 0; i < v_count; i++)
+			if ((dist[i] < dist[nearest]) && !visited[i])
+				nearest = i;
+
+		visited[nearest] = true;
+
+		for (auto i = 0; i < v_count; i++)
+			if (!visited[i] && (dist[nearest] != 0) &&
+				((graph[nearest*v_count + i] + dist[nearest]) <= dist[i]))
+				dist[i] = graph[nearest*v_count + i] + dist[nearest];
+	}
+
+	dist[target] = 0;
+	for (auto i = 0; i < v_count; i++)
+		cout << dist[i] << " ";
+
+	delete[] graph;
+	delete[] dist;
+	delete[] visited;
+	return 0;
+}
