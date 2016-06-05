@@ -1,38 +1,75 @@
-#include "stdafx.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 #include <fstream>
-#include <iostream>
 #include <string>
-
-#include <iostream>
-
-
-
 using namespace std;
 
+#define with_Alex "https://github.com/Alex-Kuz"
 
-int main(int argc, const char * argv[]) {
-	bool is_in_doxygen = false;
-	while (!cin.eof()) {
-		string s = "";
-		getline(cin, s);
-		size_t eod = s.find("*/");
+int tocSearch(ifstream& file, string strTag)
+{
+	bool flag_c = 0;
+	bool flag_t = 0;
+	string strBuf;
+	char * ptr;
+	string it;
+	while (file.good())
+	{
+		getline(file, strBuf);
 
-		if ((s.find("/**")) != string::npos)
-			is_in_doxygen = true;
-		if (is_in_doxygen) {
-			size_t p = s.find("\\func");
+		if (!flag_c)
+			flag_c = (bool)(strstr(strBuf.c_str(), "/**"));
 
-			if (p != string::npos) {
-				string description = s.substr(p + 5, eod - (p + 5));
+		if (flag_c)
+		{
+			if (!flag_t)
+			{
+				ptr = (char*)strstr(strBuf.c_str(), strTag.c_str());
+				if (ptr)
+					ptr += strTag.size() + 1;
 
-				cout << description << endl;
+				flag_t = (bool)(ptr);
 			}
+			else
+				ptr = (char*)strBuf.c_str();
+			if ((bool)strstr(strBuf.c_str(), "*/"))
+			{
+				flag_c = 0;
+				flag_t = 0;
+			}
+
+			if (flag_t)
+				cout << ptr << endl;
 		}
 
-		if (eod != string::npos)
-			is_in_doxygen = false;
+	}
+	return 0;
+}
 
+int main(int argc, char * argv[])
+{
+	if (argc <= 1)
+	{
+		cout << "No file!!! Try again" << endl;
+		return 0;
+	}
+	string  strTag;
+
+	if (argc == 2)
+	{
+		strTag = "\\func";
 	}
 
+	if (argc > 2)
+	{
+		strTag = string("\\") + string(argv[2]);
+	}
+	string strFileName(argv[1]);
+
+	cout << strFileName << "\n" << strTag << endl;
+	ifstream Text(strFileName);
+	tocSearch(Text, strTag);
+	system("pause");
 	return 0;
 }
