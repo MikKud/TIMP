@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-#define with_Alex "https://github.com/Alex-Kuz"
+
 
 int tocSearch(ifstream& file, string strTag)
 {
