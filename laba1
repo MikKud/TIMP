@@ -1,38 +1,64 @@
 #include "stdafx.h"
-#include <fstream>
 #include <iostream>
 #include <string>
-
+#include <fstream>
 using namespace std;
-
-
-int main()
+void search_diff(fstream &f1_,fstream &f2_)//Находит уникальные строк в двух файлах
 {
-	int i = 0;
-	string fname;
-	string f2name;
-	cin >> name1;
-	cin >> name2;
-
-	ifstream File1(fname);
-	ifstream File2(f2name);
-
-	while (!File1.eof() || !File2.eof()) 
+	int _i = 0;
+	std::string stringFirstFile, stringSecondFile;
+	size_t flag(0), stringNumber(1);
+	cout << "file 1" << std::endl;
+	while (!f1_.eof())
 	{
-		i++;
-		string line1;
-		string line2;
-		getline(File1, line1);
-		getline(File2, line2);
-		if (line1 != line2) 
+		std::getline(f1_, stringFirstFile);
+		while (!f2_.eof())
 		{
-			cout << fname << " " << i << " " << line1 << endl;
-			cout << f2name << " " << i << " " << line2 << endl;
-		}	
+			std::getline(f2_, stringSecondFile);
+			if (stringFirstFile == stringSecondFile)
+			{
+				flag++;
+				break;
+			}
+		}
+		if (flag == 0)
+			cout  << stringNumber  << "   " << stringFirstFile << endl;
+		flag = 0;
+		stringNumber++;
+		f2_.seekg(0);
 	}
+	stringNumber = 1;
+	f1_.seekg(0);
+	cout << "file 2" << endl;
+	while (!f2_.eof())
+	{
+		std::getline(f2_, stringSecondFile);
+		while (!f1_.eof())
+		{
+			std::getline(f1_, stringFirstFile);
+			if (stringFirstFile == stringSecondFile)
+			{
+				flag++;
+				break;
+			}
+		}
+		if (flag == 0)
+			cout <<  stringNumber << "   " << stringSecondFile << endl;
+		flag = 0;
+		stringNumber++;
+		f1_.seekg(0);
+	}
+	f2_.seekg(0);
+}
 
-	File1.close();
-	File2.close();
+
+int main() {
+	string fileName1, fileName2;
+	cin >> fileName1;
+	cin >> fileName2;
+	fstream f1(fileName1);
+	fstream f2(fileName2);
+	search_diff(f1, f2);
 	system("pause");
 	return 0;
 }
